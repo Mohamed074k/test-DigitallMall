@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+// عشان خاطر نشيل السكرول بار من السايد بار
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+ 
+// عشان خاطر نعدل شكل السكرول بار في الموقع كله
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #0b0b10;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #0b0b10;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-button {
+  display: none;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: white black;
+}
+
+@media print {
+  body {
+    zoom: 0.8;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+@media print {
+  .multiChart {
+    zoom: 0.6;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+@layer utilities {
+  .animate-slide-in-right {
+    animation: slide-in-right 0.5s ease-out forwards;
+  }
+
+  @keyframes slide-in-right {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+.animate-slide-in-left {
+  animation: slide-in-left 0.3s ease-out;
+}
+
+// rc-slider
+.price-slider .rc-slider-rail {
+  background-color: #d1d5db; 
+  height: 7px; 
+  border-radius: 9999px;
+}
+
+.price-slider .rc-slider-track {
+  background-color: #000; 
+  height: 7px; 
+  border-radius: 9999px;
+}
+
+.price-slider .rc-slider-handle {
+  border: 3px solid #000; 
+  background-color: #000; 
+  height: 15px; 
+  width: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  transition: all 0.2s ease;
+}
+
+.price-slider .rc-slider-handle-dragging {
+  border-color: #000;
+  background-color: #111;
+  box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.15);
+}
+
+/* ----------------------- */
+
+.no-scroll {
+  height: 100vh;
+  overflow: hidden;
+  position: fixed; 
+  width: 100%;
+}
