@@ -1,6 +1,6 @@
 // src/context/BrandProductsContext.jsx
 import { createContext, useState, useContext, useEffect, useMemo } from "react";
-import productsData from "../../data/mockAppProducts"; // 👈 عدلت هنا
+import mockProducts from "../../data/mockAppProducts"; // 👈 عدلت هنا
 
 const BrandProductsContext = createContext();
 
@@ -30,7 +30,7 @@ export const BrandProductsProvider = ({ children }) => {
     const fetchProducts = async () => {
       try {
         await new Promise((resolve) => setTimeout(resolve, 500));
-        setProducts(productsData);
+        setProducts(mockProducts);
       } catch (err) {
         setError("Failed to fetch products");
         console.error("Error fetching products:", err);
