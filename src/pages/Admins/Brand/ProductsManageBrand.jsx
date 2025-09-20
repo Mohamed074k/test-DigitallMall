@@ -55,9 +55,9 @@ const ProductsManageBrand = () => {
       category: selectedFilters.category,
       stockStatus: selectedFilters.stockStatus,
       status: selectedFilters.status,
-    });
+     });
     setFilteredProducts(
-      filtered.slice((currentPage - 1) * 10, currentPage * 10)
+      filtered?.slice((currentPage - 1) * 10, currentPage * 10)
     );
   }, [products, searchTerm, selectedFilters, currentPage, filterProducts]);
 
@@ -67,6 +67,8 @@ const ProductsManageBrand = () => {
       [productId]: !prev[productId],
     }));
   };
+
+  
 
   const handleAction = async (action, productId, productData, actionName) => {
     const actionMessages = {
@@ -379,7 +381,7 @@ const ProductsManageBrand = () => {
 
           {/* Products List */}
           <div className="divide-y border rounded-b-lg">
-            {filteredProducts.map((product) => (
+            {filteredProducts?.map((product) => (
               <div
                 key={product.id}
                 className="grid lg:grid-cols-6 gap-4 p-4 items-center hover:bg-gray-50 transition-all"
@@ -566,7 +568,7 @@ const ProductsManageBrand = () => {
                 >
                   Previous
                 </button>
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                {Array.from({ length: totalPages }, (_, i) => i + 1)?.map(
                   (page) => (
                     <button
                       key={page}
