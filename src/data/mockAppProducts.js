@@ -2,7 +2,7 @@
 import placeholder from "../assets/images/placeholder.png";
 import { mockBrandReels, getBrandReelsCount, getBrandLikesFromReels } from "./AppMockReels";
 
-export const mockProducts = [
+ const mockProducts = [
   {
     id: "prod_001",
     name: "Nike Air Max Sneakers",
