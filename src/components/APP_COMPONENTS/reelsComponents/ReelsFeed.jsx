@@ -1,6 +1,6 @@
-// src/components/reelsComponents/ReelsFeed.jsx - Animation props passed to ReelItem only
+// src/components/reelsComponents/ReelsFeed.jsx - Updated with touch controls
 import React, { useEffect, useRef, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ChevronUp, ChevronDown } from "lucide-react";
 import ReelItem from "./ReelItem";
 import ReelsToggleBar from "./ReelsToggleBar";
 import { useReelsFeed } from "../../../context/AppContext/ReelsFeedContext";
@@ -15,7 +15,15 @@ const ReelsFeed = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Touch handling states
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+  const [isTouching, setIsTouching] = useState(false);
+
   const urlUpdatedRef = useRef(false);
+
+  // Minimum swipe distance (in px)
+  const minSwipeDistance = 50;
 
   const updateUrlImmediately = (newReelId) => {
     const urlParams = new URLSearchParams(location.search);
@@ -29,7 +37,7 @@ const ReelsFeed = () => {
   };
 
   const handleIndexChange = (newIndex, dir = "none") => {
-    if (reels.length === 0) return;
+    if (reels.length === 0 || isAnimating) return;
 
     const newReelId = reels[newIndex]?.id;
     if (newReelId) {
@@ -91,6 +99,37 @@ const ReelsFeed = () => {
   const handleNext = () => handleIndexChange((currentIndex + 1) % reels.length, "down");
   const handlePrev = () => handleIndexChange((currentIndex - 1 + reels.length) % reels.length, "up");
 
+  // Touch handlers
+  const onTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientY);
+    setIsTouching(true);
+  };
+
+  const onTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientY);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd || isAnimating) {
+      setIsTouching(false);
+      return;
+    }
+
+    const distance = touchStart - touchEnd;
+    const isUpSwipe = distance > minSwipeDistance;
+    const isDownSwipe = distance < -minSwipeDistance;
+
+    if (isUpSwipe) {
+      handleNext(); // Swipe up = next reel
+    } else if (isDownSwipe) {
+      handlePrev(); // Swipe down = previous reel
+    }
+
+    setIsTouching(false);
+  };
+
+  // Desktop keyboard controls
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'ArrowDown' || e.key === 'PageDown') {
@@ -110,7 +149,12 @@ const ReelsFeed = () => {
   const currentReel = reels[currentIndex];
 
   return (
-    <div className="h-screen relative overflow-hidden">
+    <div 
+      className="h-screen relative overflow-hidden"
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+    >
       {/* Sticky UI — never moves */}
       <button
         onClick={handleBackToHome}
@@ -124,6 +168,24 @@ const ReelsFeed = () => {
         <ReelsToggleBar />
       </div>
 
+      {/* Desktop Navigation Buttons - Hidden on Mobile */}
+      <div className="hidden md:flex flex-col items-center space-y-4 absolute right-6 top-1/2 transform -translate-y-1/2 z-30">
+        <button
+          onClick={handlePrev}
+          className="flex items-center my-2 justify-center w-12 h-12 bg-gray-700/60 hover:bg-gray-700 !rounded-full text-white"
+          aria-label="Previous reel"
+        >
+          <ChevronUp size={28} />
+        </button>
+        <button
+          onClick={handleNext}
+          className="flex items-center justify-center w-12 h-12 bg-gray-700/60 hover:bg-gray-700 !rounded-full text-white"
+          aria-label="Next reel"
+        >
+          <ChevronDown size={28} />
+        </button>
+      </div>
+
       {/* ReelItem receives animation props — it will handle internal slide */}
       <ReelItem
         key={currentReel?.id || 'empty'}
@@ -133,6 +195,7 @@ const ReelsFeed = () => {
         onPrev={handlePrev}
         isAnimating={isAnimating}
         animationDirection={direction}
+        showMobileControls={false} // Don't show mobile nav buttons in ReelItem
       />
     </div>
   );
